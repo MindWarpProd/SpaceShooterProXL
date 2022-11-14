@@ -6,10 +6,12 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float speed = 3.5f;
     [SerializeField] GameObject _laser;
+    [SerializeField] float _setCoolDown = 4f;
+    [SerializeField] float _coolDownTimer;
     // Start is called before the first frame update
     void Start()
     {
-        // take the current pos = new pos (0,0,0)
+       // take the current pos = new pos (0,0,0)
         this.transform.position = Vector3.zero;
     }
 
@@ -18,11 +20,7 @@ public class Player : MonoBehaviour
     {
 
         CalculateMovement();
-        
-        if(Input.GetKeyDown(KeyCode.Space))
-        {
-            Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
-        }
+        ShootLaser();
 
     }
 
@@ -48,5 +46,24 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(-11, transform.position.y);
         }
+    }
+
+    void ShootLaser()
+    {
+        if (_coolDownTimer >= 0)
+        {
+            //cool down active
+            _coolDownTimer -= Time.deltaTime;
+        }
+        else
+        {
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+                _coolDownTimer = _setCoolDown;
+            }
+        }
+
     }
 }
