@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject _laser;
     [SerializeField] float _setCoolDown = 4f;
     [SerializeField] float _coolDownTimer;
+    [SerializeField] int _lives = 3;
     // Start is called before the first frame update
     void Start()
     {
@@ -65,5 +66,14 @@ public class Player : MonoBehaviour
             }
         }
 
+    }
+    public void Damage()
+    {
+        _lives--;
+
+        if (_lives <= 0)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
