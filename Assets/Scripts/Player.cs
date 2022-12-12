@@ -6,12 +6,19 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float speed = 3.5f;
     [SerializeField] GameObject _laser;
+    [SerializeField] GameObject _spawnManager;
     [SerializeField] float _setCoolDown = 4f;
     [SerializeField] float _coolDownTimer;
     [SerializeField] int _lives = 3;
+    private SpawnManager spawnManager;
     // Start is called before the first frame update
     void Start()
     {
+        spawnManager =_spawnManager.GetComponent<SpawnManager>();
+        if(spawnManager == null)
+        {
+            Debug.LogError("Player::spawnManager is null");
+        }
        // take the current pos = new pos (0,0,0)
         this.transform.position = Vector3.zero;
     }
@@ -24,6 +31,10 @@ public class Player : MonoBehaviour
         ShootLaser();
 
     }
+    /// <summary>
+    /// Player CalculateMovement
+    /// Moves player
+    /// </summary>
 
     void CalculateMovement()
     {
@@ -48,6 +59,10 @@ public class Player : MonoBehaviour
             transform.position = new Vector3(-11, transform.position.y);
         }
     }
+    /// <summary>
+    /// Player ShootLaser()
+    /// Shoots the laser
+    /// </summary>
 
     void ShootLaser()
     {
@@ -67,12 +82,20 @@ public class Player : MonoBehaviour
         }
 
     }
+    /// <summary>
+    /// Player Damage()
+    /// Damages player object lives
+    /// </summary>
     public void Damage()
     {
         _lives--;
 
         if (_lives <= 0)
         {
+            if (spawnManager != null)
+            {
+                spawnManager.StopEnemySpawn();
+            }
             Destroy(this.gameObject);
         }
     }
