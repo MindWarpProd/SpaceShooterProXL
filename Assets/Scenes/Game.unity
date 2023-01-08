@@ -239,12 +239,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22203a4d4656c05439268c6157a0fc21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3.5
-  _laser: {fileID: 5424672238604008693, guid: 201f87db123e37e4caecdf26f57de503, type: 3}
-  _spawnManager: {fileID: 1194317837}
+  _speed: 3.5
+  _laser: {fileID: 5424672238604008693, guid: 5716c84b5add92c4baadff20a314b295, type: 3}
+  _tripleLaser: {fileID: 380918248885344922, guid: c31bb05344b9d6e46af8e07211a97179, type: 3}
   _setCoolDown: 0.2
   _coolDownTimer: 0
   _lives: 3
+  _coolDownPowerUp: 10
+  _attackType: SingleLaser
 --- !u!212 &934858766
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -388,8 +390,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 040302f5c93490b439d07d9f217fab2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnEnemy: {fileID: 5092830151608749555, guid: 40ff421b9c4b5c249ad880d3bb7adef4, type: 3}
-  enemyContainer: {fileID: 1725527465}
+  _spawnEnemy: {fileID: 5092830151608749555, guid: a617567b457ff7f47913672d0700d599, type: 3}
+  _enemyContainer: {fileID: 1725527465}
+  _spawnTriplePowerUp: {fileID: 6568156480684740698, guid: 1ad8218722c9fe747913ae541e9e2122, type: 3}
   _spawnSpeed: 5
   _isSpawning: 1
 --- !u!4 &1194317839

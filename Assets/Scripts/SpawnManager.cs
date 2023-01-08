@@ -4,21 +4,20 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject spawnEnemy;
-    public GameObject enemyContainer;
+    [SerializeField] GameObject _spawnEnemy;
+    [SerializeField] GameObject _enemyContainer;
+    [SerializeField] GameObject _spawnTriplePowerUp;
     [SerializeField] float _spawnSpeed = 5;
     [SerializeField] bool _isSpawning = true;
+    
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(EnemySpawner());
+        StartCoroutine(PowerUpSpawner());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
     /// <summary>
     /// SpawnManager-EnemySpawner:
     /// Spawns Enemy Ships
@@ -28,8 +27,8 @@ public class SpawnManager : MonoBehaviour
 
         while (_isSpawning)
         {
-            GameObject newEnemy = Instantiate(spawnEnemy, new Vector3(Random.Range(-11, 11), 7, 0), Quaternion.identity);
-            newEnemy.transform.parent = enemyContainer.transform;
+            GameObject newEnemy = Instantiate(_spawnEnemy, new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
+            newEnemy.transform.parent = _enemyContainer.transform;
             yield return new WaitForSeconds(_spawnSpeed);
         }
     }
@@ -40,6 +39,20 @@ public class SpawnManager : MonoBehaviour
     public void StopEnemySpawn()
     {
         _isSpawning = false;
+    }
+
+
+    /// <summary>
+    /// PowerUpSpawner()
+    /// Creates Power Ups
+    /// </summary>
+    private IEnumerator PowerUpSpawner()
+    {
+        while (_isSpawning)
+        {
+            yield return new WaitForSeconds(Random.Range(7f, 10f));
+            Instantiate(_spawnTriplePowerUp, new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
+        }
     }
 
 

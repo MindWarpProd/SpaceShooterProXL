@@ -4,22 +4,24 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] float speed = 3.5f;
+    [SerializeField] float _speed = 3.5f;
     [SerializeField] GameObject _laser;
-    [SerializeField] GameObject _spawnManager;
+    [SerializeField] GameObject _tripleLaser;
     [SerializeField] float _setCoolDown = 4f;
     [SerializeField] float _coolDownTimer;
     [SerializeField] int _lives = 3;
-    private SpawnManager spawnManager;
+    [SerializeField] float _activePowerUp = 100;
+    private SpawnManager _spawnManager;
+    [SerializeField] string _attackType = "SingleLaser";
     // Start is called before the first frame update
     void Start()
     {
-        spawnManager =_spawnManager.GetComponent<SpawnManager>();
-        if(spawnManager == null)
+        _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        if (_spawnManager == null)
         {
             Debug.LogError("Player::spawnManager is null");
         }
-       // take the current pos = new pos (0,0,0)
+        // take the current pos = new pos (0,0,0)
         this.transform.position = Vector3.zero;
     }
 
@@ -42,7 +44,7 @@ public class Player : MonoBehaviour
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput);
-        transform.Translate(direction * speed * Time.deltaTime);
+        transform.Translate(direction * _speed * Time.deltaTime);
         if (transform.position.y <= -4 || transform.position.y >= 0)
         {
             float positionY;
@@ -76,8 +78,20 @@ public class Player : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
-                _coolDownTimer = _setCoolDown;
+                switch (_attackType)
+                {
+                    case "SingleLaser":
+                        Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+                        _coolDownTimer = _setCoolDown;
+                        break;
+                    case "TripleLaser":
+                        Instantiate(_tripleLaser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+                        _coolDownTimer = _setCoolDown;
+                        break;
+                    default:
+                        Debug.Log("Player::No laser selected");
+                        break;
+                }
             }
         }
 
@@ -92,11 +106,31 @@ public class Player : MonoBehaviour
 
         if (_lives <= 0)
         {
-            if (spawnManager != null)
+            if (_spawnManager != null)
             {
-                spawnManager.StopEnemySpawn();
+                _spawnManager.StopEnemySpawn();
             }
             Destroy(this.gameObject);
         }
+    }
+    /// <summary>
+    /// TripleShot()
+    /// Activates the Triple Shot PowerUp
+    /// </summary>
+    public void TripleShot()
+    {
+        _attackType = "TripleLaser";
+        StartCoroutine(PowerUpActiveTime(_activePowerUp));
+    }
+    /// <summary>
+    /// PowerUpCoolDown(float)
+    /// The power up cool down method
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    IEnumerator PowerUpActiveTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+        _attackType = "SingleLaser";
     }
 }
