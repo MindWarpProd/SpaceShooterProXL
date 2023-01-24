@@ -1,18 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : MonoBehaviour
 {
+    [Header("Add Score from UI")]
+    public UnityFloatEvent OnScoreChange;
+    [Header("Add Lives from UI")]
+    public UnityIntEvent OnLivesChange;
+    [Header("No lives Left")]
+    public UnityEvent OnPlayerDeath;
     [SerializeField] float _speed = 3.5f;
+    [SerializeField] float _speedRegular = 3.5f;
+    [SerializeField] float _speedBoost = 8.5f;
     [SerializeField] GameObject _laser;
     [SerializeField] GameObject _tripleLaser;
     [SerializeField] float _setCoolDown = 4f;
     [SerializeField] float _coolDownTimer;
     [SerializeField] int _lives = 3;
-    [SerializeField] float _activePowerUp = 100;
+    [SerializeField] float _activePowerUp = 10f;
+    [SerializeField] bool _boostEnabled = false;
+    [SerializeField] bool _shieldEnabled = false;
     private SpawnManager _spawnManager;
     [SerializeField] string _attackType = "SingleLaser";
+    [SerializeField] float _score;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +35,9 @@ public class Player : MonoBehaviour
         }
         // take the current pos = new pos (0,0,0)
         this.transform.position = Vector3.zero;
+        _score = 0;
+
+
     }
 
     // Update is called once per frame
@@ -37,13 +52,18 @@ public class Player : MonoBehaviour
     /// Player CalculateMovement
     /// Moves player
     /// </summary>
-
     void CalculateMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput);
+        if (_boostEnabled)
+        {
+            StartCoroutine(SpeedBoostTime(_activePowerUp));
+            _speed = _speedBoost;
+        }
+        else _speed = _speedRegular;
         transform.Translate(direction * _speed * Time.deltaTime);
         if (transform.position.y <= -4 || transform.position.y >= 0)
         {
@@ -65,7 +85,6 @@ public class Player : MonoBehaviour
     /// Player ShootLaser()
     /// Shoots the laser
     /// </summary>
-
     void ShootLaser()
     {
         if (_coolDownTimer >= 0)
@@ -102,16 +121,28 @@ public class Player : MonoBehaviour
     /// </summary>
     public void Damage()
     {
-        _lives--;
 
-        if (_lives <= 0)
+        if (!_shieldEnabled)
         {
-            if (_spawnManager != null)
+            _lives--;
+            OnLivesChange.Invoke(_lives);
+
+            if (_lives <= 0)
             {
-                _spawnManager.StopEnemySpawn();
+                OnPlayerDeath.Invoke();
+                if (_spawnManager != null)
+                {
+                    _spawnManager.StopEnemySpawn();
+                }
+                Destroy(this.gameObject);
             }
-            Destroy(this.gameObject);
         }
+        else
+        {
+            _shieldEnabled = false;
+            this.transform.GetChild(0).gameObject.SetActive(false);
+        }
+
     }
     /// <summary>
     /// TripleShot()
@@ -120,7 +151,8 @@ public class Player : MonoBehaviour
     public void TripleShot()
     {
         _attackType = "TripleLaser";
-        StartCoroutine(PowerUpActiveTime(_activePowerUp));
+        StartCoroutine(PowerAttackTime(_activePowerUp));
+
     }
     /// <summary>
     /// PowerUpCoolDown(float)
@@ -128,9 +160,52 @@ public class Player : MonoBehaviour
     /// </summary>
     /// <param name="time"></param>
     /// <returns></returns>
-    IEnumerator PowerUpActiveTime(float time)
+    IEnumerator PowerAttackTime(float time)
     {
+        Debug.Log("in attach timer");
         yield return new WaitForSeconds(time);
+
         _attackType = "SingleLaser";
+
     }
+    /// <summary>
+    /// Speed boost time down method
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    IEnumerator SpeedBoostTime(float time)
+    {
+        Debug.Log("in speed timer");
+        yield return new WaitForSeconds(time);
+        _boostEnabled = false;
+    }
+    /// <summary>
+    /// Speed powerup activate
+    /// </summary>
+    public void SetSpeedPowerUp()
+    {
+        _boostEnabled = true;
+    }
+    /// <summary>
+    /// Shield powerup activate
+    /// </summary>
+
+    public void SetShieldPowerUp()
+    {
+        _shieldEnabled = true;
+        this.transform.GetChild(0).gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// Adjust score and Invoke UI
+    /// </summary>
+    /// <param name="score"></param>
+    public void PlayerScore(float score)
+    {
+        _score += score;
+
+        OnScoreChange.Invoke(_score);
+
+    }
+
+
 }

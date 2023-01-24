@@ -5,11 +5,13 @@ using UnityEngine.UIElements;
 
 public class Enemy : MonoBehaviour
 {
+
     [SerializeField] float _enemySpeed = 4f;
+    private Player _player;
     // Start is called before the first frame update
     void Start()
     {
-        
+       _player = GameObject.Find("Player").GetComponent<Player>();
     }
 
     // Update is called once per frame
@@ -25,17 +27,19 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         
-        if(other.tag == "Player")
+
+        if (other.tag == "Player")
         {
-            Player player =other.GetComponent<Player>();
-            if (player != null)
+            
+            if (_player != null)
             {
-                player.Damage();
+                _player.Damage();
             }
             Destroy(this.gameObject);
         }
-        else if(other.tag == "Laser")
+        else if (other.tag == "Laser")
         {
+            _player.PlayerScore(10);
             Destroy(other.gameObject);
             Destroy(this.gameObject);
         }

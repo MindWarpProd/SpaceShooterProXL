@@ -6,7 +6,7 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField] GameObject _spawnEnemy;
     [SerializeField] GameObject _enemyContainer;
-    [SerializeField] GameObject _spawnTriplePowerUp;
+    [SerializeField] GameObject[] _powerUp;
     [SerializeField] float _spawnSpeed = 5;
     [SerializeField] bool _isSpawning = true;
     
@@ -15,6 +15,7 @@ public class SpawnManager : MonoBehaviour
     {
         StartCoroutine(EnemySpawner());
         StartCoroutine(PowerUpSpawner());
+        
     }
 
 
@@ -51,9 +52,9 @@ public class SpawnManager : MonoBehaviour
         while (_isSpawning)
         {
             yield return new WaitForSeconds(Random.Range(7f, 10f));
-            Instantiate(_spawnTriplePowerUp, new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
+            Instantiate(_powerUp[Random.Range(0, _powerUp.Length)], new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
         }
     }
 
-
+  
 }

@@ -8,6 +8,7 @@ public class PowerUp : MonoBehaviour
 {
     [SerializeField] float _speed = 3;
     private Player _player;
+    private string _powerUpHit;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,27 +17,41 @@ public class PowerUp : MonoBehaviour
         {
             Debug.LogError("PowerUp::Player is Null");
         }
-      // object instantiation controlled by spawnmanager  
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         transform.Translate(Vector3.down * Time.deltaTime * _speed);
-        if(transform.position.y < -7) Destroy(gameObject);
-               
+        if (transform.position.y < -7) Destroy(gameObject);
+
     }
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag == "Player" )
+        _powerUpHit = this.gameObject.tag;
+
+        if (collision.tag == "Player")
         {
-            if(_player != null)
+            switch (_powerUpHit)
             {
-                _player.TripleShot();
+                case "TripleShot":
+                    _player.TripleShot();
+                    break;
+                case "SpeedPowerUp":
+                    _player.SetSpeedPowerUp();
+                    break;
+                case "ShieldPowerUp":
+                    _player.SetShieldPowerUp();
+                    break;
+                default:
+                    Debug.Log("Collided with unkonwn object");
+                    break;
             }
             Destroy(gameObject);
         }
+       
     }
 }
