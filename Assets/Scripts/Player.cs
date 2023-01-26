@@ -13,13 +13,13 @@ public class Player : MonoBehaviour
     public UnityEvent OnPlayerDeath;
     [SerializeField] float _speed = 3.5f;
     [SerializeField] float _speedRegular = 3.5f;
-    [SerializeField] float _speedBoost = 8.5f;
+    [SerializeField] float _speedBoost = 6f;
     [SerializeField] GameObject _laser;
     [SerializeField] GameObject _tripleLaser;
     [SerializeField] float _setCoolDown = 4f;
     [SerializeField] float _coolDownTimer;
     [SerializeField] int _lives = 3;
-    [SerializeField] float _activePowerUp = 10f;
+    [SerializeField] float _activePowerUp = 100f;
     [SerializeField] bool _boostEnabled = false;
     [SerializeField] bool _shieldEnabled = false;
     private SpawnManager _spawnManager;
@@ -60,8 +60,9 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(horizontalInput, verticalInput);
         if (_boostEnabled)
         {
-            StartCoroutine(SpeedBoostTime(_activePowerUp));
             _speed = _speedBoost;
+            StartCoroutine(SpeedBoostTime(_activePowerUp));
+            
         }
         else _speed = _speedRegular;
         transform.Translate(direction * _speed * Time.deltaTime);
@@ -87,13 +88,13 @@ public class Player : MonoBehaviour
     /// </summary>
     void ShootLaser()
     {
-        if (_coolDownTimer >= 0)
+       /* if (_coolDownTimer >= 0)
         {
             //cool down active
             _coolDownTimer -= Time.deltaTime;
         }
         else
-        {
+        { */
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -112,7 +113,7 @@ public class Player : MonoBehaviour
                         break;
                 }
             }
-        }
+       // }
 
     }
     /// <summary>
