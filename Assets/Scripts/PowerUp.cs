@@ -12,6 +12,10 @@ public class PowerUp : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if( _player == null )
+        {
+            Destroy(gameObject);
+        }
         _player = GameObject.Find("Player").GetComponent<Player>();
         if (_player == null)
         {
@@ -32,25 +36,27 @@ public class PowerUp : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         _powerUpHit = this.gameObject.tag;
-
-        if (collision.tag == "Player")
+        if (_player != null)
         {
-            switch (_powerUpHit)
+            if (collision.tag == "Player")
             {
-                case "TripleShot":
-                    _player.TripleShot();
-                    break;
-                case "SpeedPowerUp":
-                    _player.SetSpeedPowerUp();
-                    break;
-                case "ShieldPowerUp":
-                    _player.SetShieldPowerUp();
-                    break;
-                default:
-                    Debug.Log("Collided with unkonwn object");
-                    break;
+                switch (_powerUpHit)
+                {
+                    case "TripleShot":
+                        _player.TripleShot();
+                        break;
+                    case "SpeedPowerUp":
+                        _player.SetSpeedPowerUp();
+                        break;
+                    case "ShieldPowerUp":
+                        _player.SetShieldPowerUp();
+                        break;
+                    default:
+                        Debug.Log("Collided with unkonwn object");
+                        break;
+                }
+                Destroy(gameObject);
             }
-            Destroy(gameObject);
         }
        
     }

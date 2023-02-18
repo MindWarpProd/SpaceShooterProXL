@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R) && _isGameOver)
         {
-            SceneManager.LoadScene("LevelOne");
+            SceneManager.LoadScene("MainMenu");
         }
 
     }
