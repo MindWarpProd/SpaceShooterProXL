@@ -16,8 +16,6 @@ public class Player : MonoBehaviour
     [SerializeField] float _speedBoost = 6f;
     [SerializeField] GameObject _laser;
     [SerializeField] GameObject _tripleLaser;
-    [SerializeField] GameObject _rightEngine;
-    [SerializeField] GameObject _leftEngine;
     [SerializeField] float _setCoolDown = 4f;
     [SerializeField] float _coolDownTimer;
     [SerializeField] int _lives = 3;
@@ -64,7 +62,7 @@ public class Player : MonoBehaviour
         {
             _speed = _speedBoost;
             StartCoroutine(SpeedBoostTime(_activePowerUp));
-
+            
         }
         else _speed = _speedRegular;
         transform.Translate(direction * _speed * Time.deltaTime);
@@ -90,26 +88,32 @@ public class Player : MonoBehaviour
     /// </summary>
     void ShootLaser()
     {
-
-
-        if (Input.GetKeyDown(KeyCode.Space))
+       /* if (_coolDownTimer >= 0)
         {
-            switch (_attackType)
-            {
-                case "SingleLaser":
-                    Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
-                    _coolDownTimer = _setCoolDown;
-                    break;
-                case "TripleLaser":
-                    Instantiate(_tripleLaser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
-                    _coolDownTimer = _setCoolDown;
-                    break;
-                default:
-                    Debug.Log("Player::No laser selected");
-                    break;
-            }
+            //cool down active
+            _coolDownTimer -= Time.deltaTime;
         }
-        // }
+        else
+        { */
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                switch (_attackType)
+                {
+                    case "SingleLaser":
+                        Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+                        _coolDownTimer = _setCoolDown;
+                        break;
+                    case "TripleLaser":
+                        Instantiate(_tripleLaser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+                        _coolDownTimer = _setCoolDown;
+                        break;
+                    default:
+                        Debug.Log("Player::No laser selected");
+                        break;
+                }
+            }
+       // }
 
     }
     /// <summary>
@@ -122,15 +126,6 @@ public class Player : MonoBehaviour
         if (!_shieldEnabled)
         {
             _lives--;
-            //Set the engine fires
-            if (_lives == 2)
-            {
-                _rightEngine.gameObject.SetActive(true);
-            }
-            else if (_lives == 1)
-            {
-                _leftEngine.gameObject.SetActive(true);
-            }
             OnLivesChange.Invoke(_lives);
 
             if (_lives <= 0)
