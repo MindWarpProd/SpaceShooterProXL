@@ -12,10 +12,6 @@ public class PowerUp : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if( _player == null )
-        {
-            Destroy(gameObject);
-        }
         _player = GameObject.Find("Player").GetComponent<Player>();
         if (_player == null)
         {
