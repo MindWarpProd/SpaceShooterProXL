@@ -9,12 +9,24 @@ public class SpawnManager : MonoBehaviour
     [SerializeField] GameObject[] _powerUp;
     [SerializeField] float _spawnSpeed = 5;
     [SerializeField] bool _isSpawning = true;
-   
+
+    private void OnEnable()
+    {
+        GameManager.GameOverEvent += GameManager_GameOverEvent;
+    }
     // Start is called before the first frame update
     void Start()
     {
 
 
+    }
+    /// <summary>
+    /// Game over event
+    /// </summary>
+    /// <param name="obj"></param>
+    private void GameManager_GameOverEvent(bool obj)
+    {
+        _isSpawning = false;
     }
     /// <summary>
     /// Starts the spawning of the enemy and PowerUps
@@ -25,10 +37,6 @@ public class SpawnManager : MonoBehaviour
         StartCoroutine(EnemySpawner());
        
     }
-
-
-
-
     /// <summary>
     /// SpawnManager-EnemySpawner:
     /// Spawns Enemy Ships
@@ -38,8 +46,11 @@ public class SpawnManager : MonoBehaviour
         while (_isSpawning)
         {
             yield return new WaitForSeconds(_spawnSpeed);
-            GameObject newEnemy = Instantiate(_spawnEnemy, new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
-            newEnemy.transform.parent = _enemyContainer.transform;
+            if (_isSpawning)
+            {
+                GameObject newEnemy = Instantiate(_spawnEnemy, new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
+                newEnemy.transform.parent = _enemyContainer.transform;
+            }
         }
     }
     /// <summary>
@@ -50,8 +61,6 @@ public class SpawnManager : MonoBehaviour
     {
         _isSpawning = false;
     }
-
-
     /// <summary>
     /// PowerUpSpawner()
     /// Creates Power Ups
@@ -64,7 +73,10 @@ public class SpawnManager : MonoBehaviour
             Debug.Log("Before PU Spawnign");
             yield return new WaitForSeconds(Random.Range(7f, 10f));
             Debug.Log("After PU Spawn");
-            Instantiate(_powerUp[Random.Range(0, _powerUp.Length)], new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
+            if (_isSpawning)
+            {
+                Instantiate(_powerUp[Random.Range(0, _powerUp.Length)], new Vector3(Random.Range(-8, 8), 7, 0), Quaternion.identity);
+            }
         }
     }
 
