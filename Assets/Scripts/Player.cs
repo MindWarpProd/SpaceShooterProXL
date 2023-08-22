@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     [SerializeField] float _speedBoost = 6f;
     [SerializeField] GameObject _laser;
     [SerializeField] GameObject _tripleLaser;
+    [SerializeField] GameObject _rightEngine;
+    [SerializeField] GameObject _leftEngine;
     [SerializeField] float _setCoolDown = 4f;
     [SerializeField] float _coolDownTimer;
     [SerializeField] int _lives = 3;
@@ -126,6 +128,11 @@ public class Player : MonoBehaviour
         if (!_shieldEnabled)
         {
             _lives--;
+            if (_lives == 2)            
+                _rightEngine.gameObject.SetActive(true);            
+            else if (_lives == 1)
+                _leftEngine.gameObject.SetActive(true);
+
             OnLivesChange.Invoke(_lives);
 
             if (_lives <= 0)
