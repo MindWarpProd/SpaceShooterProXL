@@ -11,14 +11,26 @@ public class Enemy : MonoBehaviour
     [SerializeField] float _enemySpeed = 4f;
     private Player _player;
     [SerializeField] bool _isPlayingAnimation;
+    private bool _gameOver;
     private Animator anim;
     // Start is called before the first frame update
+
+    private void OnEnable()
+    {
+        GameManager.GameOverEvent += GameManager_GameOverEvent;
+    }
+
+    private void GameManager_GameOverEvent(bool obj)
+    {
+        _gameOver = obj;
+    }
+
     void Start()
     {
-        _player = GameObject.Find("Player").GetComponent<Player>();
-        if(_player == null)
+       
+        if(_player == null && !_gameOver)
         {
-            Debug.LogError("Enemy::Player is Null");
+          _player = GameObject.Find("Player").GetComponent<Player>();
         }
         anim = this.gameObject.GetComponent<Animator>();
         if(anim == null)

@@ -64,7 +64,7 @@ public class Player : MonoBehaviour
         {
             _speed = _speedBoost;
             StartCoroutine(SpeedBoostTime(_activePowerUp));
-            
+
         }
         else _speed = _speedRegular;
         transform.Translate(direction * _speed * Time.deltaTime);
@@ -90,32 +90,26 @@ public class Player : MonoBehaviour
     /// </summary>
     void ShootLaser()
     {
-       /* if (_coolDownTimer >= 0)
-        {
-            //cool down active
-            _coolDownTimer -= Time.deltaTime;
-        }
-        else
-        { */
 
-            if (Input.GetKeyDown(KeyCode.Space))
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            switch (_attackType)
             {
-                switch (_attackType)
-                {
-                    case "SingleLaser":
-                        Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
-                        _coolDownTimer = _setCoolDown;
-                        break;
-                    case "TripleLaser":
-                        Instantiate(_tripleLaser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
-                        _coolDownTimer = _setCoolDown;
-                        break;
-                    default:
-                        Debug.Log("Player::No laser selected");
-                        break;
-                }
+                case "SingleLaser":
+                    Instantiate(_laser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+                    _coolDownTimer = _setCoolDown;
+                    break;
+                case "TripleLaser":
+                    Instantiate(_tripleLaser, new Vector3(transform.position.x, transform.position.y + 1, transform.position.z), Quaternion.identity);
+                    _coolDownTimer = _setCoolDown;
+                    break;
+                default:
+                    Debug.Log("Player::No laser selected");
+                    break;
             }
-       // }
+        }
+        // }
 
     }
     /// <summary>
@@ -128,10 +122,22 @@ public class Player : MonoBehaviour
         if (!_shieldEnabled)
         {
             _lives--;
+
             if (_lives == 2)            
                 _rightEngine.gameObject.SetActive(true);            
             else if (_lives == 1)
                 _leftEngine.gameObject.SetActive(true);
+
+
+            //Set the engine fires
+            if (_lives == 2)
+            {
+                _rightEngine.gameObject.SetActive(true);
+            }
+            else if (_lives == 1)
+            {
+                _leftEngine.gameObject.SetActive(true);
+            }
 
             OnLivesChange.Invoke(_lives);
 

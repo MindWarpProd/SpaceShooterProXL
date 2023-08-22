@@ -9,10 +9,25 @@ public class PowerUp : MonoBehaviour
     [SerializeField] float _speed = 3;
     private Player _player;
     private string _powerUpHit;
+    private bool _gameOver;
     // Start is called before the first frame update
+
+    private void OnEnable()
+    {
+        GameManager.GameOverEvent += GameManager_GameOverEvent;
+    }
+
+    private void GameManager_GameOverEvent(bool obj)
+    {
+        _gameOver = true;
+    }
+
     void Start()
     {
-        _player = GameObject.Find("Player").GetComponent<Player>();
+        if (!_gameOver)
+        {
+            _player = GameObject.Find("Player").GetComponent<Player>();
+        }
         if (_player == null)
         {
             Debug.LogError("PowerUp::Player is Null");
