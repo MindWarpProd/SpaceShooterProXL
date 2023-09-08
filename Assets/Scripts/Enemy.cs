@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 
 public class Enemy : MonoBehaviour
@@ -13,6 +10,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] bool _isPlayingAnimation;
     private bool _gameOver;
     private Animator anim;
+    public static event Action EnemyDestroy;
     // Start is called before the first frame update
 
     private void OnEnable()
@@ -46,7 +44,8 @@ public class Enemy : MonoBehaviour
         transform.Translate(Vector3.down * Time.deltaTime * _enemySpeed);
         if (transform.position.y <= -7f)
         {
-            transform.position = new Vector3(Random.Range(-10f, 10f), 7f, transform.position.z);
+            transform.position = new Vector3(UnityEngine.Random.Range(-10f, 10f), 7f, transform.position.z);
+            
         }
         if (_isPlayingAnimation)
         {
@@ -91,6 +90,7 @@ public class Enemy : MonoBehaviour
                 }
                 this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
                 _player.PlayerScore(10);
+                EnemyDestroy?.Invoke();
                 Destroy(other.gameObject);
                 _isPlayingAnimation = true;
                 Destroy(this.gameObject, 2.5f);

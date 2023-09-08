@@ -26,6 +26,7 @@ public class AsteriodBehavior : MonoBehaviour
         {
             onAsteriodDestroy.Invoke();
             this.gameObject.GetComponent<SpriteRenderer>().sprite = null;
+            this.gameObject.GetComponent<CircleCollider2D>().enabled = false;
             Instantiate(explosion, this.transform);
             Destroy(other.gameObject);
             Destroy(this.gameObject,5);

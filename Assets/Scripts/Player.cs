@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +28,9 @@ public class Player : MonoBehaviour
     private SpawnManager _spawnManager;
     [SerializeField] string _attackType = "SingleLaser";
     [SerializeField] float _score;
+    
+    public static event Action LaserFire;
+    public static event Action PlayerHit;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,7 +51,10 @@ public class Player : MonoBehaviour
     {
 
         CalculateMovement();
-        ShootLaser();
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ShootLaser();
+        }
 
     }
     /// <summary>
@@ -89,11 +96,7 @@ public class Player : MonoBehaviour
     /// Shoots the laser
     /// </summary>
     void ShootLaser()
-    {
-
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
+    {        
             switch (_attackType)
             {
                 case "SingleLaser":
@@ -108,9 +111,7 @@ public class Player : MonoBehaviour
                     Debug.Log("Player::No laser selected");
                     break;
             }
-        }
-        // }
-
+        LaserFire?.Invoke();
     }
     /// <summary>
     /// Player Damage()
@@ -123,12 +124,6 @@ public class Player : MonoBehaviour
         {
             _lives--;
 
-            if (_lives == 2)            
-                _rightEngine.gameObject.SetActive(true);            
-            else if (_lives == 1)
-                _leftEngine.gameObject.SetActive(true);
-
-
             //Set the engine fires
             if (_lives == 2)
             {
@@ -140,7 +135,10 @@ public class Player : MonoBehaviour
             }
 
             OnLivesChange.Invoke(_lives);
-
+            if(_lives > 0)
+            {
+                PlayerHit?.Invoke();
+            }
             if (_lives <= 0)
             {
                 OnPlayerDeath.Invoke();
@@ -157,6 +155,7 @@ public class Player : MonoBehaviour
             this.transform.GetChild(0).gameObject.SetActive(false);
         }
 
+        
     }
     /// <summary>
     /// TripleShot()
