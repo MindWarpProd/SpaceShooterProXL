@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.UIElements;
 using UnityEngine;
+using System;
 
 public class PowerUp : MonoBehaviour
 {
@@ -10,6 +7,8 @@ public class PowerUp : MonoBehaviour
     private Player _player;
     private string _powerUpHit;
     private bool _gameOver;
+
+    public static event Action PowerUpCollected;
     // Start is called before the first frame update
 
     private void OnEnable()
@@ -51,6 +50,7 @@ public class PowerUp : MonoBehaviour
         {
             if (collision.tag == "Player")
             {
+                PowerUpCollected?.Invoke();
                 switch (_powerUpHit)
                 {
                     case "TripleShot":

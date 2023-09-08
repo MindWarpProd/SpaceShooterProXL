@@ -7,7 +7,8 @@ public class AudioManagerScript : MonoBehaviour
 {
     [SerializeField] AudioClip _laserFire;
     [SerializeField] AudioClip _playerHit;
-    [SerializeField] AudioClip _explosion;
+    [SerializeField] AudioClip _explosion; 
+    [SerializeField] AudioClip _powerUp; 
 
     AudioSource _audioSource;
     private void OnEnable()
@@ -15,6 +16,12 @@ public class AudioManagerScript : MonoBehaviour
         Player.LaserFire += Player_LaserFire;
         Player.PlayerHit += Player_PlayerHit;
         Enemy.EnemyDestroy += Enemy_EnemyDestroy;
+        PowerUp.PowerUpCollected += PowerUp_PowerUpCollected;
+    }
+
+    private void PowerUp_PowerUpCollected()
+    {
+        PowerUpSound();
     }
 
     private void Enemy_EnemyDestroy()
@@ -60,6 +67,10 @@ public class AudioManagerScript : MonoBehaviour
     public void Explosion()
     {
         _audioSource?.PlayOneShot(_explosion);
+    }
+    public void PowerUpSound()
+    {
+        _audioSource?.PlayOneShot(_powerUp);
     }
     private void OnDisable()
     {

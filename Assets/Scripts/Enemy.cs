@@ -78,6 +78,7 @@ public class Enemy : MonoBehaviour
                 _player.Damage();
             }
             _isPlayingAnimation = true;
+            EnemyDestroy?.Invoke();
             Destroy(this.gameObject, 2.5f);
         }
         else if (other.tag == "Laser")
